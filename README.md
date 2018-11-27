@@ -1,7 +1,7 @@
 # gif_ani
 a flutter plugin to control gif animation
 
-![The example screen shot](https://github.com/hyz1992/gif_ani/gif/screenshot.gif?raw=true)
+![The example screen shot](https://github.com/hyz1992/gif_ani/blob/master/gif/screenshot.gif)
 
 ## Usage
 GifController is subclass of AnimationController.
