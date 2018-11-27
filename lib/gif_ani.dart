@@ -2,15 +2,14 @@ library gif_ani;
 
 import 'package:flutter/animation.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:meta/meta.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 class GifController extends AnimationController{
   ///gif有多少个帧
-  final int frameNum;
+  final int frameCount;
   GifController({
-    @required this.frameNum,
+    @required this.frameCount,
     @required TickerProvider vsync,
     double value,
     Duration duration,
@@ -32,7 +31,13 @@ class GifController extends AnimationController{
   }
 
   void setFrame([int index = 0]){
-    double target = index/this.frameNum;
+    if(index<0){
+      index = 0;
+    }else if(index>frameCount-1){
+      index = index-1;
+    }
+    double target = index/this.frameCount;
+
     this.animateTo(target,duration: new Duration());
   }
 }
@@ -40,7 +45,7 @@ class GifController extends AnimationController{
 class GifAnimation extends StatefulWidget{
   GifAnimation({
     @required this.image,
-    @required this.animationCtrl,
+    @required this.controller,
     this.semanticLabel,
     this.excludeFromSemantics = false,
     this.width,
@@ -54,7 +59,7 @@ class GifAnimation extends StatefulWidget{
     this.matchTextDirection = false,
     this.gaplessPlayback = false,
   });
-  final GifController animationCtrl;
+  final GifController controller;
   final ImageProvider image;
   final double width;
   final double height;
@@ -83,30 +88,34 @@ class _AnimatedImageState extends State<GifAnimation>{
   @override
   void initState() {
     super.initState();
-    _tween = new Tween<double>(begin: 0.0,end: (widget.animationCtrl.frameNum-1)*1.0);
-    widget.animationCtrl.addListener(_listener);
+    _tween = new Tween<double>(begin: 0.0,end: (widget.controller.frameCount-1)*1.0);
+    widget.controller.addListener(_listener);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.animationCtrl.removeListener(_listener);
+    widget.controller.removeListener(_listener);
   }
 
   @override
   void didUpdateWidget(GifAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.animationCtrl != oldWidget.animationCtrl) {
-      oldWidget.animationCtrl.removeListener(_listener);
-      widget.animationCtrl.addListener(_listener);
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller.removeListener(_listener);
+      widget.controller.addListener(_listener);
     }
   }
 
   void _listener(){
-    int xxx = _tween.evaluate(widget.animationCtrl)~/1;
-    if(_curIndex!=xxx){
+    int _idx = _tween.evaluate(widget.controller)~/1;
+    print("idx:$_idx");
+    if(_idx>=widget.controller.frameCount){
+      _idx = widget.controller.frameCount-1;
+    }
+    if(_curIndex!=_idx){
       setState(() {
-        _curIndex = xxx;
+        _curIndex = _idx;
       });
     }
   }
@@ -118,7 +127,7 @@ class _AnimatedImageState extends State<GifAnimation>{
       preloadImage(
         provider: widget.image,
         context: context,
-        frameNum: widget.animationCtrl.frameNum
+        frameCount: widget.controller.frameCount
       ).then((_list){
         _infos = _list;
         if(mounted){
@@ -157,7 +166,7 @@ class _AnimatedImageState extends State<GifAnimation>{
 Future<List<ImageInfo>> preloadImage({
   @required ImageProvider provider,
   @required BuildContext context,
-  int frameNum:1,
+  int frameCount:1,
   Size size,
   ImageErrorListener onError,
 }) {
@@ -167,7 +176,7 @@ Future<List<ImageInfo>> preloadImage({
   List<ImageInfo> ret = [];
   void listener(ImageInfo image, bool sync) {
     ret.add(image);
-    if(ret.length==frameNum){
+    if(ret.length==frameCount){
       completer.complete(ret);
     }
   }

@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _animationCtrl = new GifController(vsync: this,duration: new Duration(milliseconds: 1200),frameNum: 32);
+    _animationCtrl = new GifController(vsync: this,duration: new Duration(milliseconds: 1200),frameCount: 35);
   }
   @override
   void dispose() {
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget _buildGif(){
     Widget ret = new GifAnimation(
       image: new AssetImage("like_anim.gif"),
-      animationCtrl: _animationCtrl,
+      controller: _animationCtrl,
     );
     return ret;
   }

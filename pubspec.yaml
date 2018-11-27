@@ -1,8 +1,8 @@
 name: gif_ani
-description: A new flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: a flutter plugin to control gif animation.
+version: 0.0.2
+author: huang yu zhao <1451784145@qq.com>
+homepage: https://github.com/hyz1992/gif_ani
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
