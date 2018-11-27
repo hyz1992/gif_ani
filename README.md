@@ -8,7 +8,7 @@ GifController is subclass of AnimationController.
 GifAnimation is just used like Image.
 ```Dart
 import 'package:gif_ani/gif_ani.dart';
-GifController _animationCtrl = new GifController(vsync: this,duration: new Duration(milliseconds: 1200),frameNum: 32);
+GifController _animationCtrl = new GifController(vsync: this,duration: new Duration(milliseconds: 1200),frameCount: 32);
 Widget ret = new GifAnimation(
     image: new AssetImage("like_anim.gif"),
     animationCtrl: _animationCtrl,
